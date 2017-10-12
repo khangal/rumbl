@@ -22,6 +22,19 @@ defmodule Rumbl.Auth do
     configure_session(conn, drop: true)
   end
 
+  import Phoenix.Controller
+  alias Rumbl.Router.Helpers
+  def authenticate_user(conn, _opts) do
+    if conn.assigns.current_user do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be logged in to access that page")
+      |> redirect(to: Helpers.page_path(conn, :index))
+      |> halt()
+    end
+  end
+
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
 
   def login_by_username_and_pass(conn, username, given_pass, opts) do
